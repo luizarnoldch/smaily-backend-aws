@@ -32,7 +32,7 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 
 	dynamoClient := dynamodb.NewFromConfig(cfg)
 
-	dynamoInfrastructure := infrastructure.NewDynamoPetRepository(*dynamoClient, ctx, TABLE_NAME)
+	dynamoInfrastructure := infrastructure.NewDynamoPetRepository(dynamoClient, ctx, TABLE_NAME)
 	dynamoService := application.NewPetDynamoService(dynamoInfrastructure)
 
 	var petRequest domain.PetRequest

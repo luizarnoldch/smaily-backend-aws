@@ -4,16 +4,11 @@ import (
 	"context"
 	"log"
 	"main/src/infrastructure"
-	"os"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/stretchr/testify/suite"
-)
-
-var (
-	TABLE_NAME = os.Getenv("TABLE_NAME")
 )
 
 type DynamoPetRepositorySuite struct {
@@ -22,6 +17,7 @@ type DynamoPetRepositorySuite struct {
 }
 
 func (suite *DynamoPetRepositorySuite) SetupTest() {
+    TABLE_NAME := "Smaily-pets"
     var ctx context.Context
     cfg, err := config.LoadDefaultConfig(ctx)
     suite.NoError(err)
