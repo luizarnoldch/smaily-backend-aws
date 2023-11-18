@@ -1,21 +1,22 @@
 package e2e
 
 import (
-	"context"
-	"log"
-	"main/src/application"
-	"main/src/domain"
-	"main/src/infrastructure"
-	"testing"
+    "context"
+    "log"
+    "main/src/application"
+    "main/src/domain"
+    "main/src/infrastructure"
+    "testing"
 
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/stretchr/testify/assert"
+    "github.com/aws/aws-sdk-go-v2/config"
+    "github.com/aws/aws-sdk-go-v2/service/dynamodb"
+    "github.com/stretchr/testify/assert"
 )
 
 func TestCreatePetFunctionally(t *testing.T) {
+    // Using context.Background() as a base context is a common practice
+    ctx := context.Background()
 
-	var ctx context.Context
     // Initialize AWS configuration
     cfg, err := config.LoadDefaultConfig(ctx)
     if err != nil {
@@ -26,7 +27,7 @@ func TestCreatePetFunctionally(t *testing.T) {
     dynamoClient := dynamodb.NewFromConfig(cfg)
 
     // Initialize your repository
-    repo := infrastructure.NewDynamoPetRepository(dynamoClient,ctx,"Smaily-pets")
+    repo := infrastructure.NewDynamoPetRepository(dynamoClient, ctx, "Smaily-pets")
 
     // Initialize your service
     service := application.NewPetDynamoService(repo)
@@ -43,7 +44,7 @@ func TestCreatePetFunctionally(t *testing.T) {
     assert.NoError(t, err, "Should create pet without error")
     assert.NotNil(t, createdPet, "Created pet should not be nil")
 
-	log.Println(createdPet)
+    log.Println(createdPet)
 
     // Additional assertions as necessary...
 
