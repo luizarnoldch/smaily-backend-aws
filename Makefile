@@ -9,8 +9,10 @@ mock:
 	mockery --all --output ./tests/mocks
 build:
 	./scripts/build.sh
-test:
-	go test ./tests/...
+unit:
+	go test ./tests/unit/...
+integration:
+	go test ./tests/integration/...
 f_test:
 	./scripts/func_test.sh
 deploy:
@@ -25,3 +27,14 @@ e2e:
 	make deploy
 	sleep 3
 	make f_test
+pull:
+	git pull
+	make build
+test:
+	make unit
+	make deploy
+	sleep 3
+	make integration
+ab:
+	make pull
+	make test

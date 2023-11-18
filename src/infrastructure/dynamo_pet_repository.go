@@ -34,16 +34,10 @@ func (repo *DynamoDBPetRepository) GetAllPets() ([]domain.PetResponse, error) {
 		return []domain.PetResponse{}, err
 	}
 
-	var pets []domain.Pet
-	err = attributevalue.UnmarshalListOfMaps(result.Items, &pets)
+	var response []domain.PetResponse
+	err = attributevalue.UnmarshalListOfMaps(result.Items, &response)
 	if err != nil {
 		return []domain.PetResponse{}, err
-	}
-
-	var response []domain.PetResponse
-	for _, pet := range pets {
-		petResponse := pet.ToPetResponse()
-		response = append(response, petResponse)
 	}
 
 	return response, nil

@@ -1,5 +1,7 @@
 package domain
 
+import "errors"
+
 type PetRequest struct {
 	Name          string `json:"name_pet"`
 	Birth_Date    string `json:"birth_date_pet"`
@@ -21,20 +23,27 @@ type PetResponse struct {
 	Message       string `json:"message"`
 }
 
-func (p *PetRequest) ToPet() Pet {
-	return Pet{
-		ID:            p.Name,
-		Name:          p.Name,
-		Birth_Date:    p.Birth_Date,
-		Visit_Counter: p.Visit_Counter,
-	}
+func (p *PetRequest) ToPet() (Pet, error) {
+    if p.Name == "" {
+        return Pet{}, errors.New("pet name is required")
+    }
+
+    if p.Birth_Date == "" {
+        return Pet{}, errors.New("pet birth date is required")
+    }
+
+    return Pet{
+        Name:          p.Name,
+        Birth_Date:    p.Birth_Date,
+        Visit_Counter: p.Visit_Counter,
+    }, nil
 }
 
-func (p *Pet) ToPetResponse() PetResponse {
+func (p *Pet) ToPetResponse() (PetResponse, error) {
 	return PetResponse{
 		ID:            p.ID,
 		Name:          p.Name,
 		Birth_Date:    p.Birth_Date,
 		Visit_Counter: p.Visit_Counter,
-	}
+	}, nil
 }
