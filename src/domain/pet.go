@@ -21,7 +21,7 @@ type PetResponse struct {
 	Message       string `json:"message"`
 }
 
-func (p PetRequest) ToPet() Pet {
+func (p *PetRequest) ToPet() Pet {
 	return Pet{
 		ID:            p.Name,
 		Name:          p.Name,
@@ -30,7 +30,7 @@ func (p PetRequest) ToPet() Pet {
 	}
 }
 
-func (p Pet) ToPetResponse() PetResponse {
+func (p *Pet) ToPetResponse() PetResponse {
 	return PetResponse{
 		ID:            p.ID,
 		Name:          p.Name,

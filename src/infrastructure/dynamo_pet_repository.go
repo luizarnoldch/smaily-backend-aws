@@ -16,9 +16,9 @@ type DynamoDBPetRepository struct {
 	table  string
 }
 
-func NewDynamoPetRepository(config aws.Config, ctx context.Context, table string) *DynamoDBPetRepository {
+func NewDynamoPetRepository(client *dynamodb.Client, ctx context.Context, table string) *DynamoDBPetRepository {
 	return &DynamoDBPetRepository{
-		client: dynamodb.NewFromConfig(config),
+		client: client,
 		ctx:    ctx,
 		table:  table,
 	}

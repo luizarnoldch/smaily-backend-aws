@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -29,8 +30,10 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("%s", err), StatusCode: 502}, err
 	}
 
-	dynamoClient := infrastructure.NewDynamoPetRepository(cfg,ctx,TABLE_NAME)
-	dynamoService := application.NewPetDynamoService(dynamoClient)
+	dynamoClient := dynamodb.NewFromConfig(cfg)
+
+	dynamoInfrastructure := infrastructure.NewDynamoPetRepository(*dynamoClient,ctx,TABLE_NAME)
+	dynamoService := application.NewPetDynamoService(dynamoInfrastructure)
 
 	var petRequest domain.PetRequest
 

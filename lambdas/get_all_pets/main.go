@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -29,29 +30,31 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("%s", err), StatusCode: 502}, err
 	}
 
-	dynamoClient := infrastructure.NewDynamoPetRepository(cfg,ctx,TABLE_NAME)
-	dynamoService := application.NewPetDynamoService(dynamoClient)
+	dynamoClient := dynamodb.NewFromConfig(cfg)
+
+	dynamoInfrastructure := infrastructure.NewDynamoPetRepository(*dynamoClient, ctx, TABLE_NAME)
+	dynamoService := application.NewPetDynamoService(dynamoInfrastructure)
 
 	var petRequest domain.PetRequest
 
 	log.Println("unmarshal the content body")
 	if err := json.Unmarshal([]byte(request.Body), &petRequest); err != nil {
 		log.Println("error parsing request body as json:", err)
-		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("%s", err), StatusCode: 502}, nil
+		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("error parsing request body as json: %s", err), StatusCode: 502}, nil
 	}
 
 	log.Println("getting all pets")
 	response, err := dynamoService.GetAllPets()
 	if err != nil {
 		log.Println("Error getting all the pet:", err)
-		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("%s", err), StatusCode: 502}, nil
+		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("Error getting all the pet: %s", err), StatusCode: 502}, nil
 	}
 
 	log.Println("converting the response to json")
 	responseBody, err := json.Marshal(response)
 	if err != nil {
 		log.Printf("Error marshaling response to JSON: %s", err)
-		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("%s", err), StatusCode: 502}, nil
+		return events.APIGatewayProxyResponse{Body: fmt.Sprintf("Error marshaling response to JSON: %s", err), StatusCode: 502}, nil
 	}
 
 	headers := map[string]string{
