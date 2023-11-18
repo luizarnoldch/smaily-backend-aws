@@ -1,6 +1,10 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type PetRequest struct {
 	Name          string `json:"name_pet"`
@@ -33,6 +37,7 @@ func (p *PetRequest) ToPet() (Pet, error) {
     }
 
     return Pet{
+		ID: uuid.NewString(),
         Name:          p.Name,
         Birth_Date:    p.Birth_Date,
         Visit_Counter: p.Visit_Counter,
