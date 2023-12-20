@@ -1,4 +1,4 @@
-package domain
+package model
 
 import (
 	"errors"
@@ -28,20 +28,20 @@ type PetResponse struct {
 }
 
 func (p *PetRequest) ToPet() (Pet, error) {
-    if p.Name == "" {
-        return Pet{}, errors.New("pet name is required")
-    }
+	if p.Name == "" {
+		return Pet{}, errors.New("pet name is required")
+	}
 
-    if p.Birth_Date == "" {
-        return Pet{}, errors.New("pet birth date is required")
-    }
+	if p.Birth_Date == "" {
+		return Pet{}, errors.New("pet birth date is required")
+	}
 
-    return Pet{
-		ID: uuid.NewString(),
-        Name:          p.Name,
-        Birth_Date:    p.Birth_Date,
-        Visit_Counter: p.Visit_Counter,
-    }, nil
+	return Pet{
+		ID:            uuid.NewString(),
+		Name:          p.Name,
+		Birth_Date:    p.Birth_Date,
+		Visit_Counter: p.Visit_Counter,
+	}, nil
 }
 
 func (p *Pet) ToPetResponse() (PetResponse, error) {

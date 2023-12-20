@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"main/src/application"
-	"main/src/domain"
-	"main/src/infrastructure"
+	"main/src/application/service"
+	"main/src/domain/model"
+	"main/src/infrastructure/repository_adapter"
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -32,10 +32,10 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 
 	dynamoClient := dynamodb.NewFromConfig(cfg)
 
-	dynamoInfrastructure := infrastructure.NewDynamoPetRepository(dynamoClient, ctx, TABLE_NAME)
-	dynamoService := application.NewPetDynamoService(dynamoInfrastructure)
+	dynamoInfrastructure := repository_adapter.NewDynamoPetRepository(dynamoClient, ctx, TABLE_NAME)
+	dynamoService := service.NewPetDynamoService(dynamoInfrastructure)
 
-	var petRequest domain.PetRequest
+	var petRequest model.PetRequest
 
 	log.Println("unmarshal the content body")
 	if err := json.Unmarshal([]byte(request.Body), &petRequest); err != nil {
@@ -66,7 +66,7 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 
 	log.Println("pet was created")
 	return events.APIGatewayProxyResponse{
-		Headers: headers,
+		Headers:    headers,
 		Body:       string(responseBody),
 		StatusCode: 200,
 	}, nil
